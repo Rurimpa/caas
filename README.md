@@ -44,19 +44,23 @@ Rules: the session only *runs* the trigger — it never creates, edits, enables 
 `code/gate/caas_gate.js` is a small stdio MCP proxy (Node.js, no AI inside). Claude Desktop starts it instead of `claude mcp serve`; it starts `claude mcp serve` as a child and relays JSON-RPC line by line.
 
 - **Only four tools pass:** `ListAgents`, `SendMessage`, `Read`, `Glob`. Others are removed from `tools/list`, and a `tools/call` for any other tool is answered with an error and never reaches the child.
-- **`Read` and `Glob` work only inside the tray folder** (`CAAS_TRAY_DIR`). The chat can find and read the sessions' reply files, and nothing else on the PC. Secret patterns (`.env`, credentials, keys, tokens, …) are refused even inside the tray.
+- **`Read` and `Glob` work only inside the tray folder** (`CAAS_TRAY_DIR`). The chat can find and read the sessions' reply files, and nothing else on the PC. Secret patterns (`.env`, credentials, keys, tokens, …) are refused even inside the tray. Paths are also checked at their real location, so a link or junction inside the tray cannot lead outside. The `Glob` pattern must be a plain relative pattern (no drive letter, leading `/` or `\`, `~ ( ) { } | ! @ +`) — an absolute pattern would ignore `path` and list files outside the tray.
+- **`SendMessage` goes only to the sessions you name** with `CAAS_SEND_ALLOW_RE` (a regular expression matched against the session name, e.g. `^agent_\d+$`). If it is not set, `SendMessage` is refused.
 - **Fail-closed:** a call whose arguments cannot be read is refused. Refusals are logged to `CAAS_GATE_RECORD` (default: a file in the OS temp folder).
 
 Install — in `claude_desktop_config.json`, point the `claude-code` server at the gate:
 
 ```json
 "claude-code": { "command": "node", "args": ["/path/to/caas_gate.js"],
-                 "env": { "CAAS_TRAY_DIR": "/path/to/chat_agent_tray" } }
+                 "env": { "CAAS_TRAY_DIR": "/path/to/chat_agent_tray",
+                          "CAAS_SEND_ALLOW_RE": "^agent_\\d+$" } }
 ```
 
 **Quit Claude Desktop completely before editing this file.** Claude Desktop writes `claude_desktop_config.json` back from memory when it quits, so an edit made while it is running is overwritten on exit. We hit this: after a restart the chat still talked to `claude mcp serve` directly. Check that no Claude Desktop process is left, edit, then start it. Verify afterwards that Claude Desktop → `node caas_gate.js` → `claude mcp serve` appear as parent and child processes, and that the chat now lists only the four tools.
 
 Measured on 2026-09-28: after limiting `Read` to the tray, 10 of 10 direct tests passed on the gate's own side, and an independent test with a stub child passed 7 of 7 (Read inside the tray passed; Read outside the tray, Read escaping with `..`, and a `.env` Read inside the tray were refused; Glob inside the tray passed, outside refused; Bash refused; `tools/list` kept only allowed tools). Earlier, in the real chat, the 25 other Claude Code tools disappeared and tray `Glob`/`Read` still worked.
+
+**Fixed on 2026-09-28 (later the same day):** the first public gate let a `Glob` with an absolute pattern (for example `E:/Users/**/*.md`) list file names outside the tray — the `Glob` tool ignores `path` when the pattern is absolute — and let `Read`/`Glob` follow a junction inside the tray to a folder outside. Against the old gate's own judge, both passed; against the new one, 13 of 13 tests gave the expected result (9 refused: absolute pattern, absolute pattern hidden in `{…}`, `..`, a path outside, `Glob` and `Read` through a junction, `Read` outside, `Bash`, `SendMessage` to a name not allowed; 4 allowed: `Glob` in the tray and in a subfolder, `Read` in the tray, `SendMessage` to an allowed name). These are tests of the gate's judge on one PC, not of the real chat. If you installed the first version, replace `caas_gate.js` and set `CAAS_SEND_ALLOW_RE`.
 
 ## Safety
 
@@ -65,7 +69,7 @@ Measured on 2026-09-28: after limiting `Read` to the tray, 10 of 10 direct tests
 - On 2026-09-28 we tested `claude mcp serve` v2.1.283 (the same binary Claude Desktop launches): a `permissions.deny` rule in a project-level `.claude/settings.json` was **not honored** — the denied command ran through MCP `tools/call`. A user-level deny rule was not tested. 28 tools were exposed, including Bash, PowerShell and Write. **Claude Code's permission settings do not protect you here; the gate does.**
 - **What the gate does not cover:**
   1. **Other MCP servers in the same Claude Desktop** (for example a file-system server or a screen-control extension). They are exposed to the chat independently of the gate. Review them yourself.
-  2. **What a session does when the chat asks it by `SendMessage`.** The gate lets messages through; the receiving session then acts under its *own* permission settings. A session that runs without permission prompts will do whatever the chat asks. Choose receiving sessions and their settings accordingly, and make sure only you can use the conversation.
+  2. **What a session does when the chat asks it by `SendMessage`.** The gate only checks the recipient's name (`CAAS_SEND_ALLOW_RE`); the receiving session then acts under its *own* permission settings. A session that runs without permission prompts will do whatever the chat asks. Choose receiving sessions and their settings accordingly, and make sure only you can use the conversation.
 - **What the chat can no longer do with the gate:** start new Claude Code sessions, run shell commands, poll the tray with a shell loop, or read files outside the tray. The return leg is the trigger only.
 - The tray never holds request bodies — only replies, progress and questions — so dropping a file into the tray cannot command a session.
 - No inbound port or tunnel is opened. No credentials are read.

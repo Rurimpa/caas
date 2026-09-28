@@ -14,7 +14,9 @@
  *   - tools/list -> only ALLOW tools are returned
  *   - tools/call -> tools not in ALLOW are answered with an error and never reach the child
  *   - Read       -> only inside the tray folder (secret / forbidden paths are also refused, as a second line)
- *   - Glob       -> only inside the tray folder
+ *   - Glob       -> only inside the tray folder, and the pattern must be a plain relative pattern
+ *   - SendMessage -> only to sessions whose name matches CAAS_SEND_ALLOW_RE (refused when it is not set)
+ *   Read / Glob paths are also checked at their real location (after following links / junctions).
  *   fail-closed: a call that cannot be judged is refused.
  *
  * IMPORTANT: Claude desktop rewrites claude_desktop_config.json from memory when it quits.
@@ -23,7 +25,8 @@
  * NOT covered: other MCP servers in the same desktop app (file system, screen control, ...), and whatever
  *   an agent session does when the chat asks it via SendMessage (that is up to the agent's own permissions).
  *
- * CONFIG (env): CAAS_CLAUDE_EXE (default "claude"), CAAS_TRAY_DIR (default <cwd>/chat_agent_tray), CAAS_GATE_RECORD
+ * CONFIG (env): CAAS_CLAUDE_EXE (default "claude"), CAAS_TRAY_DIR (default <cwd>/chat_agent_tray), CAAS_GATE_RECORD,
+ *   CAAS_SEND_ALLOW_RE (regex of session names the chat may message, e.g. ^agent_\d+$ ; not set = SendMessage refused)
  */
 'use strict';
 
@@ -40,6 +43,9 @@ const RECORD = process.env.CAAS_GATE_RECORD ||
 
 const ALLOW = new Set(['ListAgents', 'SendMessage', 'Read', 'Glob']);
 
+// SendMessage recipients: only session names matching this regex. Not set -> SendMessage is refused (fail-closed).
+const SEND_ALLOW_RE = process.env.CAAS_SEND_ALLOW_RE ? new RegExp(process.env.CAAS_SEND_ALLOW_RE, 'i') : null;
+
 // Secret / forbidden paths (add your own private folders here)
 const FORBIDDEN = [
   /(^|[\\/])\.env($|[.\\/])/i, /credentials/i, /\.pem$/i, /\.key$/i, /\.token$/i,
@@ -55,6 +61,19 @@ function record(row) {
 
 function norm(p) { return path.resolve(String(p)).toLowerCase(); }
 
+// real location after following links / junctions; null if the path does not exist
+function real(p) {
+  try { return fs.realpathSync.native(path.resolve(String(p))).toLowerCase().replace(/\//g, '\\'); }
+  catch (e) { return null; }
+}
+const TRAY_REAL = real(TRAY) || TRAY;
+function inTray(p) {
+  const rp = norm(p);
+  if (!(rp === TRAY || rp.startsWith(TRAY + '\\'))) return false;
+  const re = real(p);   // an existing path is also checked at its real location (a link inside the tray cannot lead out)
+  return re === null || re === TRAY_REAL || re.startsWith(TRAY_REAL + '\\');
+}
+
 // returns a reason string to deny, or null to allow
 function judge(name, args) {
   if (!ALLOW.has(name)) return 'Tool "' + name + '" is closed by the CAAS gate (allowed: ' + [...ALLOW].join(', ') + ')';
@@ -64,16 +83,29 @@ function judge(name, args) {
     if (typeof p !== 'string' || !p) return 'Read path unreadable (fail-closed)';
     if (FORBIDDEN.some((re) => re.test(p) || re.test(norm(p)))) return 'This path is secret/forbidden';
     // Read is allowed only inside the tray (CAAS only needs to read reply papers). FORBIDDEN stays as a second line.
-    const rp = norm(p);
-    if (!(rp === TRAY || rp.startsWith(TRAY + '\\'))) return 'Read is allowed only inside the tray folder';
+    if (!inTray(p)) return 'Read is allowed only inside the tray folder';
   }
   if (name === 'Glob') {
-    const base = typeof args.path === 'string' && args.path ? norm(args.path) : null;
-    if (!base || !(base === TRAY || base.startsWith(TRAY + '\\'))) return 'Glob is allowed only inside the tray folder; pass the tray full path as path';
-    if (typeof args.pattern === 'string' && /\.\./.test(args.pattern)) return '.. is not allowed in the Glob pattern';
+    const base = typeof args.path === 'string' && args.path ? args.path : null;
+    if (!base || !inTray(base)) return 'Glob is allowed only inside the tray folder; pass the tray full path as path';
+    if (typeof args.pattern !== 'string' || !args.pattern) return 'Glob pattern unreadable (fail-closed)';
+    if (/\.\./.test(args.pattern)) return '.. is not allowed in the Glob pattern';
+    // An absolute pattern ignores `path` and searches outside the tray (measured 2026-09-28).
+    // Absolute paths can also hide inside {a,b} or @(...), so symbols the chat does not need are refused.
+    if (/^[\\/]/.test(args.pattern) || /[:~(){}|!@+\\]/.test(args.pattern)) return 'Only a plain relative Glob pattern is allowed (no drive letter, leading / or \\, ~ ( ) { } | ! @ +)';
+  }
+  if (name === 'SendMessage') {
+    const to = typeof args.to === 'string' ? args.to.trim().replace(/\s*\[[^\]]*\]$/, '') : '';
+    if (!to) return 'SendMessage recipient unreadable (fail-closed)';
+    if (!SEND_ALLOW_RE) return 'SendMessage is refused: set CAAS_SEND_ALLOW_RE to the session names the chat may message';
+    if (!SEND_ALLOW_RE.test(to)) return 'SendMessage is allowed only to sessions matching CAAS_SEND_ALLOW_RE';
   }
   return null;
 }
+
+// tests can require this file and call judge() without starting the relay
+module.exports = { judge };
+if (require.main !== module) return;
 
 const env = Object.assign({}, process.env);
 delete env.ANTHROPIC_API_KEY;   // keep the child on your subscription, not API billing
