@@ -141,8 +141,11 @@ function writeDesktopConfig(a) {
   const isReal = a.config.toLowerCase() === real.toLowerCase();
   if (isReal) {
     const run = desktopRunning();
-    if (run !== false) fail(run ? 'Claude Desktop is running. Quit it completely (including the tray icon) and run this again — if it is running, it overwrites the config with the old content when it quits'
-      : 'Could not tell whether Claude Desktop is running. Stopping without writing');
+    const why = run ? 'Claude Desktop is running. Quit it completely (including the tray icon) before the real install — if it is running, it overwrites the config with the old content when it quits'
+      : 'Could not tell whether Claude Desktop is running';
+    // --dry-run writes nothing, so show the plan anyway and only warn
+    if (run !== false && a.dryRun) step('warning', { message: why });
+    else if (run !== false) fail(why + '. Stopping without writing');
   }
   let c = {};
   if (fs.existsSync(a.config)) {
@@ -151,7 +154,9 @@ function writeDesktopConfig(a) {
   c.mcpServers = c.mcpServers || {};
   const entry = gateEntry(a);
   const cur = c.mcpServers['claude-code'];
-  if (cur && JSON.stringify(cur) !== JSON.stringify(entry) && !a.replace) {
+  if (cur && JSON.stringify(cur) !== JSON.stringify(entry) && !a.replace && a.dryRun) {
+    step('warning', { message: 'The config already has a different "claude-code" entry. The real install will stop unless you add --replace', current: cur });
+  } else if (cur && JSON.stringify(cur) !== JSON.stringify(entry) && !a.replace) {
     fail(`the config already has a "claude-code" entry (${JSON.stringify(cur)}). Add --replace to overwrite it`);
   }
   c.mcpServers['claude-code'] = entry;

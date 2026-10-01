@@ -15,8 +15,8 @@ English＝[README.en.md](README.en.md)／くわしい入れ方＝[QUICKSTART.md]
 **① 関所を入れる**（Claude Desktop をタスクトレイから完全に終了してから）
 
 ```
-npx github:Rurimpa/caas#v1.0.0 setup --dry-run
-npx github:Rurimpa/caas#v1.0.0 setup
+npx github:Rurimpa/caas#v1.0.1 setup --dry-run
+npx github:Rurimpa/caas#v1.0.1 setup
 ```
 
 1行目は「何をするか」を見せるだけで、何も書きません。2行目で入れます。最後に `"result": "installed"` と、チャットに貼る1文が出ます。終わったら Claude Desktop を起動します。

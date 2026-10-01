@@ -15,8 +15,8 @@ You need: a Windows PC, Claude Desktop, Claude Code and Node.js.
 **1. Install the gate** (quit Claude Desktop completely first, including the tray icon)
 
 ```
-npx github:Rurimpa/caas#v1.0.0 setup --dry-run
-npx github:Rurimpa/caas#v1.0.0 setup
+npx github:Rurimpa/caas#v1.0.1 setup --dry-run
+npx github:Rurimpa/caas#v1.0.1 setup
 ```
 
 The first line only shows what it would do and writes nothing. The second installs. It ends with `"result": "installed"` and one sentence to paste into your chat. Then start Claude Desktop again.
