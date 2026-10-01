@@ -1,4 +1,4 @@
-# CAAS（キャス）— Chat–Agent Auto Session
+# CAAS（カーズ）— Chat–Agent Auto Session
 
 > ⚠️ **関所（`code/gate/caas_gate.js`）を入れずに CAAS を使わないでください。** 関所がないと、チャットに話しかけられる人なら誰でも、PC の上でどんな命令でも動かせてしまいます。「安全について」を先に読んでください。
 
