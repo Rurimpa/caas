@@ -2,7 +2,7 @@
 
 This page walks you from nothing to one working round trip: you ask in your everyday Claude.ai conversation, a Claude Code session on the same PC does the work, and the answer comes back to the same conversation without you typing anything else.
 
-Read [Safety](README.md#safety) in the README first. Do not skip the gate.
+Read [Safety](README.en.md#safety) in the README first. Do not skip the gate.
 
 Tested on one PC only (Windows 11, Claude Desktop, Max plan), September 2026. Other setups are untested.
 
