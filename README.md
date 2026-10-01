@@ -6,7 +6,37 @@
 
 技術ノート（DOI）：[10.5281/zenodo.23005933](https://doi.org/10.5281/zenodo.23005933)・作者：がけっぷちのふくしゃちょう
 
-English＝[README.en.md](README.en.md)／入れ方＝[QUICKSTART.md](QUICKSTART.md)（英語）
+English＝[README.en.md](README.en.md)／くわしい入れ方＝[QUICKSTART.md](QUICKSTART.md)（英語）
+
+## 5分で動かす：3手（Windows で確認）
+
+要るもの＝Windows の PC・Claude Desktop・Claude Code・Node.js。
+
+**① 関所を入れる**（Claude Desktop をタスクトレイから完全に終了してから）
+
+```
+npx github:Rurimpa/caas#v1.0.0 setup --dry-run
+npx github:Rurimpa/caas#v1.0.0 setup
+```
+
+1行目は「何をするか」を見せるだけで、何も書きません。2行目で入れます。最後に `"result": "installed"` と、チャットに貼る1文が出ます。終わったら Claude Desktop を起動します。
+
+**② 仕事をする席を用意する**（Claude Code で）
+
+```
+/plugin marketplace add Rurimpa/caas
+/plugin install caas@caas
+```
+
+そのあと、仕事をさせたいフォルダで席を立てます：`claude --name agent_1`
+
+**③ チャットにスキルを入れて、話しかける**（Claude.ai で）
+
+1. [`chat-skill/caas-chat.zip`](chat-skill/caas-chat.zip) を、Claude.ai の「設定」→「機能」→「スキル」からアップロードします。
+2. 新しいチャットで何か1通送り、会話の名前の横の PC のマークから **Link to this computer** を選びます（会話ごとに1回。ここだけは人の操作です）。
+3. ①で出た1文（`My CAAS tray is … Set up CAAS.`）を送ります。チャットが自分で確かめて、呼び鈴を作ります。
+
+あとは「agent_1 に〇〇を頼んで」と話しかけるだけです。
 
 ---
 

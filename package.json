@@ -1,0 +1,9 @@
+{
+  "name": "caas",
+  "version": "1.0.0",
+  "description": "Install the CAAS gate into Claude Desktop (Windows)",
+  "bin": { "caas": "code/setup/caas_setup.js" },
+  "files": ["code/"],
+  "license": "MIT",
+  "repository": "github:Rurimpa/caas"
+}

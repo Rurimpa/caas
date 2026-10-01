@@ -1,4 +1,12 @@
-# CAAS — Quick start
+# CAAS — Detailed setup (by hand)
+
+> **Most people do not need this page.** The 3 steps at the top of the [README](README.en.md) are enough. This page is for doing it by hand, without the Claude Code plugin, or for understanding what each step does.
+>
+> | README step | What it covers on this page |
+> |---|---|
+> | 1. `npx github:Rurimpa/caas#v1.0.0 setup` | step 1 (the gate) — the Fast path below |
+> | 2. `/plugin install caas@caas`, then `claude --name agent_1` | step 2 (named session) and step 3 (reply guard + session procedure) |
+> | 3. chat skill `caas-chat.zip`, link the chat, "Set up CAAS" | step 4 (link to this PC), step 5 (bell) and step 6 (first round trip) |
 
 This page walks you from nothing to one working round trip: you ask in your everyday Claude.ai conversation, a Claude Code session on the same PC does the work, and the answer comes back to the same conversation without you typing anything else.
 
@@ -15,18 +23,22 @@ Tested on one PC only (Windows 11, Claude Desktop, Max plan), September 2026. Ot
 - **Node.js** (to run the gate and the hook).
 - A folder for replies — the **tray**. Example: `C:\caas\chat_agent_tray\` with an empty `done\` folder inside it.
 
-## Fast path: let the setup script do steps 1 and 3
+## Fast path: let the setup script do step 1
 
-`code/setup/caas_setup.js` does steps 1 and 3 below in one run and then checks the result. **Quit Claude Desktop completely first** — the script refuses to write the config while Claude Desktop is running.
+`code/setup/caas_setup.js` does step 1 below (and step 3 too, if you pass `--seat-dir`) in one run and then checks the result. **Quit Claude Desktop completely first** — the script refuses to write the config while Claude Desktop is running.
 
 ```
-node code/setup/caas_setup.js --root C:\caas --send-allow "^agent_\d+$" --seat-dir C:\work
+npx github:Rurimpa/caas#v1.0.0 setup --dry-run
+npx github:Rurimpa/caas#v1.0.0 setup
 ```
 
-- `--root` — where the gate, the tray (`chat_agent_tray\` with `done\`) and the gate's record go.
-- `--send-allow` — which session names the chat may message (same as `CAAS_SEND_ALLOW_RE`). Leave it out and the chat can message nobody.
-- `--seat-dir` — the folder where you will start the Claude Code session (step 2). The reply guard is added to `<seat-dir>\.claude\settings.json`.
-- Add `--dry-run` to see what it would do without writing anything.
+(From a downloaded copy: `node code/setup/caas_setup.js setup …` with the same options.)
+
+- `--root` — where the gate, the tray (`chat_agent_tray\` with `done\`) and the gate's record go. Default: `<your home folder>\caas`.
+- `--send-allow` — which session names the chat may message (same as `CAAS_SEND_ALLOW_RE`). Default: `^agent_\d+$` (sessions named `agent_1`, `agent_2`, …). Pass `--send-allow ""` to let the chat message nobody.
+- `--seat-dir` — only if you do **not** use the Claude Code plugin: the folder where you will start the session (step 2). The reply guard is then added to `<seat-dir>\.claude\settings.json`. With the plugin, leave it out (the plugin already adds the guard).
+- `--dry-run` — shows what it would do and writes nothing.
+- The tray location is also written to `<your home folder>\.caas\config.json`, where the reply guard reads it.
 
 What it does: copies the gate and the reply guard **unchanged**, adds the `claude-code` entry (with the `env` settings) to `claude_desktop_config.json` after saving a backup next to it, keeps your other MCP servers, and stops if a different `claude-code` entry is already there (add `--replace` to overwrite it). Then it starts the gate once and checks two things: the chat sees exactly four tools, and a `SendMessage` to a name outside `--send-allow` is refused by the gate. It prints `"result": "installed"` only when both pass.
 

@@ -1,0 +1,12 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "SendMessage",
+        "hooks": [
+          { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/code/hooks/caas-reply-guard.js\"", "timeout": 20 }
+        ]
+      }
+    ]
+  }
+}

@@ -36,12 +36,15 @@
 const fs = require('fs');
 const path = require('path');
 const cp = require('child_process');
+const os = require('os');
 
 const WANT_TOOLS = ['Glob', 'ListAgents', 'Read', 'SendMessage'];
 
 function args() {
   const a = { dryRun: false, verifyOnly: false, replace: false };
+  // `npx github:Rurimpa/caas#<tag> setup ...` passes the word "setup" first; skip plain words
   const v = process.argv.slice(2);
+  if (v[0] === 'setup') v.shift();
   for (let i = 0; i < v.length; i++) {
     const k = v[i];
     if (k === '--dry-run') a.dryRun = true;
@@ -49,8 +52,10 @@ function args() {
     else if (k === '--replace') a.replace = true;
     else if (k.startsWith('--')) a[k.slice(2).replace(/-(\w)/g, (_, c) => c.toUpperCase())] = v[++i];
   }
-  if (!a.root) fail('pass --root (the folder to install into)');
-  a.root = path.resolve(a.root);
+  a.root = path.resolve(a.root || path.join(os.homedir(), 'caas'));
+  // The chat may message sessions named agent_1, agent_2, ... unless told otherwise
+  a.sendAllow = a.sendAllow === undefined ? '^agent_\\d+$' : a.sendAllow;
+  a.userConfig = path.resolve(a.userConfig || path.join(os.homedir(), '.caas', 'config.json'));
   a.config = path.resolve(a.config || path.join(process.env.APPDATA || '', 'Claude', 'claude_desktop_config.json'));
   a.node = a.node || process.execPath;
   a.claudeExe = a.claudeExe || findClaude();
@@ -58,7 +63,9 @@ function args() {
   a.guardSrc = path.resolve(a.guardSrc || path.join(__dirname, '..', 'hooks', 'caas-reply-guard.js'));
   for (const f of [a.gateSrc, a.guardSrc]) if (!fs.existsSync(f)) fail(`part not found (${f})`);
   if (a.sendAllow) { try { new RegExp(a.sendAllow); } catch (e) { fail(`--send-allow is not a valid regular expression (${a.sendAllow})`); } }
-  a.seatDir = path.resolve(a.seatDir || a.root);
+  // The Claude Code plugin already installs the reply guard for every session.
+  // Only without the plugin, pass --seat-dir to add the guard to that folder's settings.
+  a.seatDir = a.seatDir ? path.resolve(a.seatDir) : null;
   return a;
 }
 function fail(msg) { console.log(JSON.stringify({ result: 'stopped', reason: msg }, null, 1)); process.exit(1); }
@@ -111,6 +118,13 @@ function placeGuardHook(a) {
   if (!has) list.push({ matcher: 'SendMessage', hooks: [{ type: 'command', command: cmd, timeout: 20 }] });
   writeFile(a, p, JSON.stringify(s, null, 2) + '\n');
   step('reply guard hook', { file: p, note: 'applies only to Claude Code sessions started in --seat-dir' });
+}
+
+// One small file that the plugin's reply guard reads (where the tray is)
+function writeUserConfig(a) {
+  const c = { tray: path.join(a.root, 'chat_agent_tray'), root: a.root, send_allow: a.sendAllow };
+  writeFile(a, a.userConfig, JSON.stringify(c, null, 2) + '\n');
+  step('caas config', { file: a.userConfig, tray: c.tray, send_allow: c.send_allow });
 }
 
 function desktopRunning() {
@@ -208,13 +222,18 @@ function verify(a) {
   step('found', { node: a.node, claude_exe: a.claudeExe, config: a.config });
   if (!a.verifyOnly) {
     placeParts(a);
-    placeGuardHook(a);
+    if (a.seatDir) placeGuardHook(a);
+    writeUserConfig(a);
     writeDesktopConfig(a);
   }
   const v = a.dryRun ? { ok: null, why: '--dry-run: the gate was not started' } : await verify(a);
   step('check', v);
   const ok = a.dryRun || v.ok;
   console.log(JSON.stringify({ result: a.dryRun ? 'dry-run' : (ok ? 'installed' : 'check_failed'), steps,
-    next: ok && !a.dryRun ? 'Start Claude Desktop, then follow QUICKSTART.md from step 2 (start a named session in --seat-dir, link a conversation to this computer, create the bell)' : undefined }, null, 1));
+    next: ok && !a.dryRun ? [
+      'Start Claude Desktop again.',
+      'Start the session that does the work:  claude --name agent_1',
+      'In your Claude.ai chat (with the CAAS chat skill added), say:  "My CAAS tray is ' + path.join(a.root, 'chat_agent_tray') + '. Set up CAAS."',
+    ] : (a.dryRun ? 'Nothing was written. Run again without --dry-run to install.' : undefined) }, null, 1));
   process.exit(ok ? 0 : 1);
 })();

@@ -42,7 +42,11 @@ const os = require('os');
 const path = require('path');
 
 const STATE_DIR = process.env.CAAS_STATE_DIR || path.join(os.tmpdir(), 'caas-reply-guard');
-const TRAY_DIR = process.env.CAAS_TRAY_DIR || '<your tray folder>';
+// Tray folder shown in the message: env first, then ~/.caas/config.json (written by the setup script)
+function trayFromUserConfig() {
+  try { return JSON.parse(fs.readFileSync(path.join(os.homedir(), '.caas', 'config.json'), 'utf8')).tray || null; } catch (e) { return null; }
+}
+const TRAY_DIR = process.env.CAAS_TRAY_DIR || trayFromUserConfig() || '<your tray folder>';
 const MARKER = '[chat_agent_tray';
 const TAIL_BYTES = 4 * 1024 * 1024;
 

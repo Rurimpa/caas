@@ -6,7 +6,37 @@
 
 Technical note (DOI): [10.5281/zenodo.23005933](https://doi.org/10.5281/zenodo.23005933) · Author: がけっぷちのふくしゃちょう / The Cliff-Edge Fukushacho
 
-日本語＝[README.md](README.md) · Setup＝[QUICKSTART.md](QUICKSTART.md)
+日本語＝[README.md](README.md) · Detailed setup＝[QUICKSTART.md](QUICKSTART.md)
+
+## Run it in 5 minutes: 3 steps (checked on Windows)
+
+You need: a Windows PC, Claude Desktop, Claude Code and Node.js.
+
+**1. Install the gate** (quit Claude Desktop completely first, including the tray icon)
+
+```
+npx github:Rurimpa/caas#v1.0.0 setup --dry-run
+npx github:Rurimpa/caas#v1.0.0 setup
+```
+
+The first line only shows what it would do and writes nothing. The second installs. It ends with `"result": "installed"` and one sentence to paste into your chat. Then start Claude Desktop again.
+
+**2. Prepare the session that does the work** (in Claude Code)
+
+```
+/plugin marketplace add Rurimpa/caas
+/plugin install caas@caas
+```
+
+Then start the session in the folder where it should work: `claude --name agent_1`
+
+**3. Add the chat skill and talk** (in Claude.ai)
+
+1. Upload [`chat-skill/caas-chat.zip`](chat-skill/caas-chat.zip) in Claude.ai under Settings → Capabilities → Skills.
+2. In a new chat, send any message, then choose **Link to this computer** from the PC icon next to the conversation title (once per conversation; this is the one manual step).
+3. Send the sentence from step 1 (`My CAAS tray is … Set up CAAS.`). The chat checks everything and creates its bell.
+
+From then on, just say "ask agent_1 to …".
 
 ---
 
