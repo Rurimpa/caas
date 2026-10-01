@@ -6,6 +6,8 @@
 
 Technical note (DOI): [10.5281/zenodo.23005933](https://doi.org/10.5281/zenodo.23005933) · Author: がけっぷちのふくしゃちょう / The Cliff-Edge Fukushacho
 
+日本語＝[README.ja.md](README.ja.md) · Setup＝[QUICKSTART.md](QUICKSTART.md)
+
 ---
 
 ## What is new
