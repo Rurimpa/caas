@@ -14,9 +14,9 @@ You need: a Windows PC, Claude Desktop, Claude Code and Node.js.
 
 **1. Install the gate** (in Claude Desktop)
 
-Download [`caas-gate.mcpb`](https://github.com/Rurimpa/caas/releases/latest/download/caas-gate.mcpb), then in Claude Desktop open Settings → Extensions → Advanced settings → Install Extension…, choose the file and press Install (on some PCs double-clicking the file opens Claude Desktop; on ours Windows asked which app to use). Right after installing, Claude Desktop may show "cannot connect to the extension server" in red even though the chat can already use the gate (checked on Windows, 2026-10-02). **After changing a setting (tray folder, sessions the chat may message), quit Claude Desktop from the system tray and start it again** (turning the extension off and on was not enough: calls from the chat still used the old setting). At every start the gate writes one line with the settings it received and the ones it uses to `C:\Users\<you>\caas\gate_record.jsonl`. The gate is installed as a Claude Desktop extension. The default settings work as they are (tray = `C:\Users\<you>\caas\chat_agent_tray`, sessions the chat may message = `agent_1`, `agent_2`, ...).
+Download [`caas-gate.mcpb`](https://github.com/Rurimpa/caas/releases/latest/download/caas-gate.mcpb), then in Claude Desktop open Settings → Extensions → Advanced settings → Install Extension…, choose the file and press Install (on some PCs double-clicking the file opens Claude Desktop; on ours Windows asked which app to use). Right after installing, Claude Desktop may show "cannot connect to the extension server" in red even though the chat can already use the gate (checked on Windows, 2026-10-02). **After changing a setting (tray folder, sessions the chat may message), quit Claude Desktop from the system tray and start it again** (turning the extension off and on was not enough: calls from the chat still used the old setting). At every start the gate writes one line with the settings it received and the ones it uses to `C:\Users\<you>\caas\gate_record.jsonl`. The gate is installed as a Claude Desktop extension. The default settings work as they are (tray = `C:\Users\<you>\caas\chat_agent_tray`, sessions the chat may message = `CAAS_agent_1`, `CAAS_agent_2`, ...).
 
-(Without the extension, by hand: `npx github:Rurimpa/caas#v1.1.1 setup`. See QUICKSTART.md.)
+(Without the extension, by hand: `npx github:Rurimpa/caas#v1.2.0 setup`. See QUICKSTART.md.)
 
 **2. Prepare the session that does the work** (in Claude Code)
 
@@ -25,7 +25,7 @@ Download [`caas-gate.mcpb`](https://github.com/Rurimpa/caas/releases/latest/down
 /plugin install caas@caas
 ```
 
-Then start the session in the folder where it should work: `claude --name agent_1`
+Then start the session in the folder where it should work: `claude --name CAAS_agent_1`
 
 **3. Add the chat skill and talk** (in Claude.ai)
 
@@ -33,7 +33,7 @@ Then start the session in the folder where it should work: `claude --name agent_
 2. In a new chat, send any message, then choose **Link to this computer** from the PC icon next to the conversation title (once per conversation; this is the one manual step).
 3. Send "Set up CAAS". The chat checks everything and creates its bell (if you changed the tray folder, send its path too).
 
-From then on, just say "ask agent_1 to …".
+From then on, just say "ask CAAS_agent_1 to …".
 
 ---
 
@@ -74,7 +74,7 @@ Rules: the session only *runs* the trigger — it never creates, edits, enables 
 
 - **Only four tools pass:** `ListAgents`, `SendMessage`, `Read`, `Glob`. Others are removed from `tools/list`, and a `tools/call` for any other tool is answered with an error and never reaches the child.
 - **`Read` and `Glob` work only inside the tray folder** (`CAAS_TRAY_DIR`). The chat can find and read the sessions' reply files, and nothing else on the PC. Secret patterns (`.env`, credentials, keys, tokens, …) are refused even inside the tray. Paths are also checked at their real location, so a link or junction inside the tray cannot lead outside. The `Glob` pattern must be a plain relative pattern (no drive letter, leading `/` or `\`, `~ ( ) { } | ! @ +`) — an absolute pattern would ignore `path` and list files outside the tray.
-- **`SendMessage` goes only to the sessions you name** with `CAAS_SEND_ALLOW_RE` (a regular expression matched against the session name, e.g. `^agent_\d+$`). If it is not set, `SendMessage` is refused.
+- **`SendMessage` goes only to the sessions you name** with `CAAS_SEND_ALLOW_RE` (a regular expression matched against the session name, e.g. `^caas_agent_\d+(-\d+)?$`). If it is not set, `SendMessage` is refused.
 - **Fail-closed:** a call whose arguments cannot be read is refused. Refusals are logged to `CAAS_GATE_RECORD` (default: a file in the OS temp folder).
 
 Install — in `claude_desktop_config.json`, point the `claude-code` server at the gate:
@@ -82,7 +82,7 @@ Install — in `claude_desktop_config.json`, point the `claude-code` server at t
 ```json
 "claude-code": { "command": "node", "args": ["/path/to/caas_gate.js"],
                  "env": { "CAAS_TRAY_DIR": "/path/to/chat_agent_tray",
-                          "CAAS_SEND_ALLOW_RE": "^agent_\\d+$" } }
+                          "CAAS_SEND_ALLOW_RE": "^caas_agent_\\d+(-\\d+)?$" } }
 ```
 
 **Quit Claude Desktop completely before editing this file.** Claude Desktop writes `claude_desktop_config.json` back from memory when it quits, so an edit made while it is running is overwritten on exit. We hit this: after a restart the chat still talked to `claude mcp serve` directly. Check that no Claude Desktop process is left, edit, then start it. Verify afterwards that Claude Desktop → `node caas_gate.js` → `claude mcp serve` appear as parent and child processes, and that the chat now lists only the four tools.

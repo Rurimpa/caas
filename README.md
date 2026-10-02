@@ -14,9 +14,9 @@ English＝[README.en.md](README.en.md)／くわしい入れ方＝[QUICKSTART.md]
 
 **① ゲートを入れる**（Claude Desktop で）
 
-[`caas-gate.mcpb`](https://github.com/Rurimpa/caas/releases/latest/download/caas-gate.mcpb) をダウンロードし、Claude Desktop の「設定」→「拡張機能」→「詳細設定」→「拡張機能をインストール…」でそのファイルを選び、「インストール」を押します（ダブルクリックで Claude Desktop が開く PC もありますが、開き方を聞かれる PC もありました）。入れた直後に「拡張機能サーバーに接続できません」と赤く出ることがありますが、チャットからは使えていました（2026-10-02 に Windows で確認）。**設定（トレイの場所・話しかけてよい席）を変えたら、Claude Desktop をタスクトレイから終了して起動し直してください**（「有効」のスイッチの切り入れだけでは、チャットからの呼び出しに古い設定が残りました）。ゲートは起動のたびに、受け取った設定と実際に使う設定を `C:\Users\<あなたの名前>\caas\gate_record.jsonl` に1行書きます。ゲートは Claude Desktop の拡張機能として入ります。設定は初めの値のままで動きます（トレイ＝`C:\Users\<あなたの名前>\caas\chat_agent_tray`・話しかけてよい席＝`agent_1`、`agent_2`…）。
+[`caas-gate.mcpb`](https://github.com/Rurimpa/caas/releases/latest/download/caas-gate.mcpb) をダウンロードし、Claude Desktop の「設定」→「拡張機能」→「詳細設定」→「拡張機能をインストール…」でそのファイルを選び、「インストール」を押します（ダブルクリックで Claude Desktop が開く PC もありますが、開き方を聞かれる PC もありました）。入れた直後に「拡張機能サーバーに接続できません」と赤く出ることがありますが、チャットからは使えていました（2026-10-02 に Windows で確認）。**設定（トレイの場所・話しかけてよい席）を変えたら、Claude Desktop をタスクトレイから終了して起動し直してください**（「有効」のスイッチの切り入れだけでは、チャットからの呼び出しに古い設定が残りました）。ゲートは起動のたびに、受け取った設定と実際に使う設定を `C:\Users\<あなたの名前>\caas\gate_record.jsonl` に1行書きます。ゲートは Claude Desktop の拡張機能として入ります。設定は初めの値のままで動きます（トレイ＝`C:\Users\<あなたの名前>\caas\chat_agent_tray`・話しかけてよい席＝`CAAS_agent_1`、`CAAS_agent_2`…）。
 
-（拡張機能を使わずに手で入れる道＝`npx github:Rurimpa/caas#v1.1.1 setup`。くわしくは QUICKSTART.md）
+（拡張機能を使わずに手で入れる道＝`npx github:Rurimpa/caas#v1.2.0 setup`。くわしくは QUICKSTART.md）
 
 **② 仕事をする席を用意する**（Claude Code で）
 
@@ -25,7 +25,7 @@ English＝[README.en.md](README.en.md)／くわしい入れ方＝[QUICKSTART.md]
 /plugin install caas@caas
 ```
 
-そのあと、仕事をさせたいフォルダで席を立てます：`claude --name agent_1`
+そのあと、仕事をさせたいフォルダで席を立てます：`claude --name CAAS_agent_1`
 
 **③ チャットにスキルを入れて、話しかける**（Claude.ai で）
 
@@ -33,7 +33,7 @@ English＝[README.en.md](README.en.md)／くわしい入れ方＝[QUICKSTART.md]
 2. 新しいチャットで何か1通送り、会話の名前の横の PC のマークから **Link to this computer** を選びます（会話ごとに1回。ここだけは人の操作です）。
 3. 「Set up CAAS」と送ります。チャットが自分で確かめて、呼び鈴を作ります（トレイを初めの値から変えたときは、その場所も一緒に送ります）。
 
-あとは「agent_1 に〇〇を頼んで」と話しかけるだけです。
+あとは「CAAS_agent_1 に〇〇を頼んで」と話しかけるだけです。
 
 ---
 

@@ -8,7 +8,7 @@
  *   - CAAS_GATE_RECORD   : <home>\caas\gate_record.jsonl
  *   - CAAS_CLAUDE_EXE    : found like the setup script does (Claude Desktop's own claude.exe is skipped);
  *                          if nothing is found it stays unset and the gate runs "claude" from PATH
- *   - CAAS_SEND_ALLOW_RE : ^agent_\d+$
+ *   - CAAS_SEND_ALLOW_RE : ^caas_agent_\d+(-\d+)?$
  * A value that is empty or still holds an unreplaced ${...} is treated as not set.
  */
 'use strict';
@@ -49,7 +49,7 @@ const given = {};
 const tray = pick('CAAS_TRAY_DIR', path.join(home, 'caas', 'chat_agent_tray'));
 try { fs.mkdirSync(path.join(tray, 'done'), { recursive: true }); } catch (e) { /* the gate still runs; Glob finds nothing */ }
 pick('CAAS_GATE_RECORD', path.join(home, 'caas', 'gate_record.jsonl'));
-pick('CAAS_SEND_ALLOW_RE', '^agent_\\d+$');
+pick('CAAS_SEND_ALLOW_RE', '^caas_agent_\\d+(-\\d+)?$');
 const claudeExe = findClaude();
 process.env.CAAS_CLAUDE_EXE = '';
 pick('CAAS_CLAUDE_EXE', claudeExe);

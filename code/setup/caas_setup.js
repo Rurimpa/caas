@@ -53,8 +53,8 @@ function args() {
     else if (k.startsWith('--')) a[k.slice(2).replace(/-(\w)/g, (_, c) => c.toUpperCase())] = v[++i];
   }
   a.root = path.resolve(a.root || path.join(os.homedir(), 'caas'));
-  // The chat may message sessions named agent_1, agent_2, ... unless told otherwise
-  a.sendAllow = a.sendAllow === undefined ? '^agent_\\d+$' : a.sendAllow;
+  // The chat may message sessions named CAAS_agent_1, CAAS_agent_2, ... unless told otherwise
+  a.sendAllow = a.sendAllow === undefined ? '^caas_agent_\\d+(-\\d+)?$' : a.sendAllow;
   a.userConfig = path.resolve(a.userConfig || path.join(os.homedir(), '.caas', 'config.json'));
   a.config = path.resolve(a.config || path.join(process.env.APPDATA || '', 'Claude', 'claude_desktop_config.json'));
   a.node = a.node || process.execPath;
@@ -237,7 +237,7 @@ function verify(a) {
   console.log(JSON.stringify({ result: a.dryRun ? 'dry-run' : (ok ? 'installed' : 'check_failed'), steps,
     next: ok && !a.dryRun ? [
       'Start Claude Desktop again.',
-      'Start the session that does the work:  claude --name agent_1',
+      'Start the session that does the work:  claude --name CAAS_agent_1',
       'In your Claude.ai chat (with the CAAS chat skill added), say:  "My CAAS tray is ' + path.join(a.root, 'chat_agent_tray') + '. Set up CAAS."',
     ] : (a.dryRun ? 'Nothing was written. Run again without --dry-run to install.' : undefined) }, null, 1));
   process.exit(ok ? 0 : 1);

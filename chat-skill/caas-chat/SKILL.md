@@ -32,7 +32,7 @@ Do these in order and tell the user what you found at each step.
    - text: `Bell: a session put an answer in <tray folder>. Read the .md files there that start with FROM and end with END, and report them to me.`
    Tell the user the trigger id (`trig_…`). You will put it in every request.
 4. **Sessions.** Call `ListAgents` and show the names. If none is running, tell the user to start one
-   in a terminal: `claude --name agent_1`.
+   in a terminal: `claude --name CAAS_agent_1`.
 
 ## 1. Sending work
 

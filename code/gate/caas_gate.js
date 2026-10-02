@@ -26,7 +26,7 @@
  *   an agent session does when the chat asks it via SendMessage (that is up to the agent's own permissions).
  *
  * CONFIG (env): CAAS_CLAUDE_EXE (default "claude"), CAAS_TRAY_DIR (default <cwd>/chat_agent_tray), CAAS_GATE_RECORD,
- *   CAAS_SEND_ALLOW_RE (regex of session names the chat may message, e.g. ^agent_\d+$ ; not set = SendMessage refused)
+ *   CAAS_SEND_ALLOW_RE (regex of session names the chat may message, e.g. ^caas_agent_\d+(-\d+)?$ ; not set = SendMessage refused)
  */
 'use strict';
 

@@ -4,8 +4,8 @@
 >
 > | README step | What it covers on this page |
 > |---|---|
-> | 1. `npx github:Rurimpa/caas#v1.1.1 setup` | step 1 (the gate) — the Fast path below |
-> | 2. `/plugin install caas@caas`, then `claude --name agent_1` | step 2 (named session) and step 3 (reply guard + session procedure) |
+> | 1. `npx github:Rurimpa/caas#v1.2.0 setup` | step 1 (the gate) — the Fast path below |
+> | 2. `/plugin install caas@caas`, then `claude --name CAAS_agent_1` | step 2 (named session) and step 3 (reply guard + session procedure) |
 > | 3. chat skill `caas-chat.zip`, link the chat, "Set up CAAS" | step 4 (link to this PC), step 5 (bell) and step 6 (first round trip) |
 
 This page walks you from nothing to one working round trip: you ask in your everyday Claude.ai conversation, a Claude Code session on the same PC does the work, and the answer comes back to the same conversation without you typing anything else.
@@ -28,14 +28,14 @@ Tested on one PC only (Windows 11, Claude Desktop, Max plan), September 2026. Ot
 `code/setup/caas_setup.js` does step 1 below (and step 3 too, if you pass `--seat-dir`) in one run and then checks the result. **Quit Claude Desktop completely first** — the script refuses to write the config while Claude Desktop is running.
 
 ```
-npx github:Rurimpa/caas#v1.1.1 setup --dry-run
-npx github:Rurimpa/caas#v1.1.1 setup
+npx github:Rurimpa/caas#v1.2.0 setup --dry-run
+npx github:Rurimpa/caas#v1.2.0 setup
 ```
 
 (From a downloaded copy: `node code/setup/caas_setup.js setup …` with the same options.)
 
 - `--root` — where the gate, the tray (`chat_agent_tray\` with `done\`) and the gate's record go. Default: `<your home folder>\caas`.
-- `--send-allow` — which session names the chat may message (same as `CAAS_SEND_ALLOW_RE`). Default: `^agent_\d+$` (sessions named `agent_1`, `agent_2`, …). Pass `--send-allow ""` to let the chat message nobody.
+- `--send-allow` — which session names the chat may message (same as `CAAS_SEND_ALLOW_RE`). Default: `^caas_agent_\d+(-\d+)?$` (sessions named `CAAS_agent_1`, `CAAS_agent_2`, …). Pass `--send-allow ""` to let the chat message nobody.
 - `--seat-dir` — only if you do **not** use the Claude Code plugin: the folder where you will start the session (step 2). The reply guard is then added to `<seat-dir>\.claude\settings.json`. With the plugin, leave it out (the plugin already adds the guard).
 - `--dry-run` — shows what it would do and writes nothing.
 - The tray location is also written to `<your home folder>\.caas\config.json`, where the reply guard reads it.
@@ -56,7 +56,7 @@ Tested on one PC only (a temporary folder and a copy of the config). If you pref
   "args": ["C:\\caas\\caas_gate.js"],
   "env": {
     "CAAS_TRAY_DIR": "C:\\caas\\chat_agent_tray",
-    "CAAS_SEND_ALLOW_RE": "^agent_\\d+$"
+    "CAAS_SEND_ALLOW_RE": "^caas_agent_\\d+(-\\d+)?$"
   }
 }
 ```
@@ -71,7 +71,7 @@ Tested on one PC only (a temporary folder and a copy of the config). If you pref
 Open a terminal in the folder where the work should happen and start a session whose name matches `CAAS_SEND_ALLOW_RE`:
 
 ```
-claude --name agent_1
+claude --name CAAS_agent_1
 ```
 
 This session is the one the chat will talk to. It acts under **its own** permission settings — the gate does not limit what it does. Choose its settings with that in mind.
@@ -113,12 +113,12 @@ A bell wakes **only the conversation it was created in**. A new conversation nee
 
 In the conversation, ask something small, e.g.:
 
-> Using CAAS, ask agent_1 what folder it is working in.
+> Using CAAS, ask CAAS_agent_1 what folder it is working in.
 
 What should happen:
 
-1. The chat calls `ListAgents`, then `SendMessage` to `agent_1` with the marker line `[chat_agent_tray CM-… reply-to=… bell=trig_…]`.
-2. `agent_1` writes `CM-…_reply_01.md` into the tray (first line `FROM …`, last line `END`) and runs the bell.
+1. The chat calls `ListAgents`, then `SendMessage` to `CAAS_agent_1` with the marker line `[chat_agent_tray CM-… reply-to=… bell=trig_…]`.
+2. `CAAS_agent_1` writes `CM-…_reply_01.md` into the tray (first line `FROM …`, last line `END`) and runs the bell.
 3. The conversation wakes by itself, reads the file and answers you.
 
 If nothing comes back, look at the PC screen first: the session may be waiting for a permission answer.

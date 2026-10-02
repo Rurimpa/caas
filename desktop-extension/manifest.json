@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "caas-gate",
   "display_name": "CAAS Gate",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Lets your Claude.ai chat hand work to a Claude Code session already running on this PC, through a gate that opens only four tools.",
   "long_description": "CAAS (Chat-Agent Auto Session): talk to your everyday Claude.ai chat, a Claude Code session already running on this PC does the work, and the answer comes back to the same chat by itself. This extension is the gate between the chat and Claude Code. It starts `claude mcp serve` and lets the chat use only ListAgents, SendMessage (only to sessions whose name matches the pattern below), and Read / Glob (only inside the tray folder). Everything else is refused. Install the session side with `/plugin marketplace add Rurimpa/caas` and `/plugin install caas@caas` in Claude Code, and the chat side with the caas-chat skill.",
   "author": { "name": "The Cliff-Edge Fukushacho" },
@@ -40,8 +40,8 @@
     "send_allow": {
       "type": "string",
       "title": "Sessions the chat may message",
-      "description": "A pattern of session names. The default allows agent_1, agent_2, ... (start one with: claude --name agent_1).",
-      "default": "^agent_\\d+$",
+      "description": "A pattern of session names. The default allows CAAS_agent_1, CAAS_agent_2, ... and hand-off sessions like CAAS_agent_1-2 (start one with: claude --name CAAS_agent_1).",
+      "default": "^caas_agent_\\d+(-\\d+)?$",
       "required": false
     },
     "claude_exe": {
