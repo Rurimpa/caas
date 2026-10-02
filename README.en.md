@@ -14,9 +14,9 @@ You need: a Windows PC, Claude Desktop, Claude Code and Node.js.
 
 **1. Install the gate** (in Claude Desktop)
 
-Download [`caas-gate.mcpb`](https://github.com/Rurimpa/caas/releases/latest/download/caas-gate.mcpb), then in Claude Desktop open Settings → Extensions → Advanced settings → Install Extension…, choose the file and press Install (on some PCs double-clicking the file opens Claude Desktop; on ours Windows asked which app to use). Right after installing, Claude Desktop may show "cannot connect to the extension server" in red even though the chat can already use the gate (checked on Windows, 2026-10-02). The gate is installed as a Claude Desktop extension. The default settings work as they are (tray = `C:\Users\<you>\caas\chat_agent_tray`, sessions the chat may message = `agent_1`, `agent_2`, ...).
+Download [`caas-gate.mcpb`](https://github.com/Rurimpa/caas/releases/latest/download/caas-gate.mcpb), then in Claude Desktop open Settings → Extensions → Advanced settings → Install Extension…, choose the file and press Install (on some PCs double-clicking the file opens Claude Desktop; on ours Windows asked which app to use). Right after installing, Claude Desktop may show "cannot connect to the extension server" in red even though the chat can already use the gate (checked on Windows, 2026-10-02). **After changing a setting (tray folder, sessions the chat may message), quit Claude Desktop from the system tray and start it again** (turning the extension off and on was not enough: calls from the chat still used the old setting). At every start the gate writes one line with the settings it received and the ones it uses to `C:\Users\<you>\caas\gate_record.jsonl`. The gate is installed as a Claude Desktop extension. The default settings work as they are (tray = `C:\Users\<you>\caas\chat_agent_tray`, sessions the chat may message = `agent_1`, `agent_2`, ...).
 
-(Without the extension, by hand: `npx github:Rurimpa/caas#v1.1.0 setup`. See QUICKSTART.md.)
+(Without the extension, by hand: `npx github:Rurimpa/caas#v1.1.1 setup`. See QUICKSTART.md.)
 
 **2. Prepare the session that does the work** (in Claude Code)
 

@@ -44,6 +44,8 @@ function findClaude() {
   return cands.find((p) => p && fs.existsSync(p) && !/WindowsApps|AnthropicClaude/i.test(p)) || null;
 }
 
+const given = {};
+['CAAS_TRAY_DIR', 'CAAS_GATE_RECORD', 'CAAS_SEND_ALLOW_RE', 'CAAS_CLAUDE_EXE'].forEach((k) => { given[k] = process.env[k] === undefined ? null : process.env[k]; });
 const tray = pick('CAAS_TRAY_DIR', path.join(home, 'caas', 'chat_agent_tray'));
 try { fs.mkdirSync(path.join(tray, 'done'), { recursive: true }); } catch (e) { /* the gate still runs; Glob finds nothing */ }
 pick('CAAS_GATE_RECORD', path.join(home, 'caas', 'gate_record.jsonl'));
@@ -51,6 +53,14 @@ pick('CAAS_SEND_ALLOW_RE', '^agent_\\d+$');
 const claudeExe = findClaude();
 process.env.CAAS_CLAUDE_EXE = '';
 pick('CAAS_CLAUDE_EXE', claudeExe);
+
+// One line at start: what the app passed, and what the gate will use (helps when a setting seems ignored).
+try {
+  const used = {};
+  Object.keys(given).forEach((k) => { used[k] = process.env[k] === undefined ? null : process.env[k]; });
+  fs.mkdirSync(path.dirname(process.env.CAAS_GATE_RECORD), { recursive: true });
+  fs.appendFileSync(process.env.CAAS_GATE_RECORD, JSON.stringify({ ts: new Date().toISOString(), event: 'started', given, used }) + '\n', 'utf8');
+} catch (e) { /* never stop because logging failed */ }
 
 // Run the gate as the main module of this process (it relays only when it is the main module).
 const gate = path.join(__dirname, 'caas_gate.js');

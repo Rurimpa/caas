@@ -4,7 +4,7 @@
 >
 > | README step | What it covers on this page |
 > |---|---|
-> | 1. `npx github:Rurimpa/caas#v1.1.0 setup` | step 1 (the gate) — the Fast path below |
+> | 1. `npx github:Rurimpa/caas#v1.1.1 setup` | step 1 (the gate) — the Fast path below |
 > | 2. `/plugin install caas@caas`, then `claude --name agent_1` | step 2 (named session) and step 3 (reply guard + session procedure) |
 > | 3. chat skill `caas-chat.zip`, link the chat, "Set up CAAS" | step 4 (link to this PC), step 5 (bell) and step 6 (first round trip) |
 
@@ -28,8 +28,8 @@ Tested on one PC only (Windows 11, Claude Desktop, Max plan), September 2026. Ot
 `code/setup/caas_setup.js` does step 1 below (and step 3 too, if you pass `--seat-dir`) in one run and then checks the result. **Quit Claude Desktop completely first** — the script refuses to write the config while Claude Desktop is running.
 
 ```
-npx github:Rurimpa/caas#v1.1.0 setup --dry-run
-npx github:Rurimpa/caas#v1.1.0 setup
+npx github:Rurimpa/caas#v1.1.1 setup --dry-run
+npx github:Rurimpa/caas#v1.1.1 setup
 ```
 
 (From a downloaded copy: `node code/setup/caas_setup.js setup …` with the same options.)

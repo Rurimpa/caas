@@ -7,7 +7,7 @@
     {
       "name": "caas",
       "description": "Session-side skill and reply guard for CAAS (Chat-Agent Auto Session).",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "author": { "name": "The Cliff-Edge Fukushacho" },
       "source": "./",
       "category": "productivity",
