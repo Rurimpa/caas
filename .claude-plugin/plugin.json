@@ -1,7 +1,7 @@
 {
   "name": "caas",
   "description": "CAAS (Chat-Agent Auto Session): a running Claude Code session receives work from your everyday Claude.ai chat and sends the result back to the same chat. This plugin adds the session-side skill and the reply guard.",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": { "name": "The Cliff-Edge Fukushacho" },
   "homepage": "https://github.com/Rurimpa/caas",
   "repository": "https://github.com/Rurimpa/caas",

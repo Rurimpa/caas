@@ -12,14 +12,11 @@ Technical note (DOI): [10.5281/zenodo.23005933](https://doi.org/10.5281/zenodo.2
 
 You need: a Windows PC, Claude Desktop, Claude Code and Node.js.
 
-**1. Install the gate** (quit Claude Desktop completely first, including the tray icon)
+**1. Install the gate** (in Claude Desktop)
 
-```
-npx github:Rurimpa/caas#v1.0.1 setup --dry-run
-npx github:Rurimpa/caas#v1.0.1 setup
-```
+Download [`caas-gate.mcpb`](https://github.com/Rurimpa/caas/releases/latest/download/caas-gate.mcpb), then in Claude Desktop open Settings → Extensions → Advanced settings → Install Extension…, choose the file and press Install (on some PCs double-clicking the file opens Claude Desktop; on ours Windows asked which app to use). Right after installing, Claude Desktop may show "cannot connect to the extension server" in red even though the chat can already use the gate (checked on Windows, 2026-10-02). The gate is installed as a Claude Desktop extension. The default settings work as they are (tray = `C:\Users\<you>\caas\chat_agent_tray`, sessions the chat may message = `agent_1`, `agent_2`, ...).
 
-The first line only shows what it would do and writes nothing. The second installs. It ends with `"result": "installed"` and one sentence to paste into your chat. Then start Claude Desktop again.
+(Without the extension, by hand: `npx github:Rurimpa/caas#v1.1.0 setup`. See QUICKSTART.md.)
 
 **2. Prepare the session that does the work** (in Claude Code)
 
@@ -34,7 +31,7 @@ Then start the session in the folder where it should work: `claude --name agent_
 
 1. Upload [`chat-skill/caas-chat.zip`](chat-skill/caas-chat.zip) in Claude.ai under Settings → Capabilities → Skills.
 2. In a new chat, send any message, then choose **Link to this computer** from the PC icon next to the conversation title (once per conversation; this is the one manual step).
-3. Send the sentence from step 1 (`My CAAS tray is … Set up CAAS.`). The chat checks everything and creates its bell.
+3. Send "Set up CAAS". The chat checks everything and creates its bell (if you changed the tray folder, send its path too).
 
 From then on, just say "ask agent_1 to …".
 

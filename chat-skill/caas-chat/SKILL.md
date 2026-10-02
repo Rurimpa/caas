@@ -22,8 +22,10 @@ Do these in order and tell the user what you found at each step.
      and choose **Link to this computer**, then say *Set up CAAS* again."
      (A brand-new chat cannot be linked from the empty New chat screen; it must have one message first.)
    - If you have more Claude Code tools than these four, warn the user: the gate may not be installed.
-2. **Tray folder.** You need its full path (the setup script printed it, e.g. `C:\Users\<name>\caas\chat_agent_tray`).
-   If the user has not given it, ask for it. Check it with `Glob` (path = the tray, pattern = `*`).
+2. **Tray folder.** You need its full path. If the user installed the CAAS Gate extension with its default
+   settings, it is `C:\Users\<Windows user name>\caas\chat_agent_tray`; if they used the setup script, it printed it.
+   If the user has not given it, ask for their Windows user name (or the path shown in Claude Desktop →
+   Settings → Extensions → CAAS Gate). Check it with `Glob` (path = the tray, pattern = `*`).
 3. **Bell.** Create a one-shot scheduled message in **this** conversation with your scheduled-message tool:
    - name: `CAAS bell`
    - date: 2030-01-01 (far future; running it does not use it up)
