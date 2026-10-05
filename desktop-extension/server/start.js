@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SPDX-FileCopyrightText: 2026 Rurimpa (https://github.com/Rurimpa/caas)
+// SPDX-License-Identifier: MIT
 /*
  * start.js - starts the CAAS gate inside the Claude Desktop extension (.mcpb).
  *

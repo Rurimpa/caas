@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SPDX-FileCopyrightText: 2026 Rurimpa (https://github.com/Rurimpa/caas)
+// SPDX-License-Identifier: MIT
 /*
  * caas-reply-guard.js — Claude Code PreToolUse hook (matcher: SendMessage)
  *

@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SPDX-FileCopyrightText: 2026 Rurimpa (https://github.com/Rurimpa/caas)
+// SPDX-License-Identifier: MIT
 /*
  * caas_gate.js - CAAS (Chat-Agent Auto Session) gate.
  *   A stdio MCP proxy that exposes only chosen Claude Code tools to the Claude desktop app chat.

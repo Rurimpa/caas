@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SPDX-FileCopyrightText: 2026 Rurimpa (https://github.com/Rurimpa/caas)
+// SPDX-License-Identifier: MIT
 /*
  * caas_setup.js — installs CAAS (Chat–Agent Auto Session) on this PC
  *

@@ -119,4 +119,4 @@ Measured on 2026-09-28: after limiting `Read` to the tray, 10 of 10 direct tests
 
 ## License
 
-Code (`code/`): MIT — see `LICENSE`. Documentation (this README and the procedures): CC BY 4.0.
+Everything here, code and documentation (this README and the procedures), is MIT — see `LICENSE`. When you reuse or adapt it, please keep the author's name (Rurimpa) and a link to this repository. Author: Rurimpa — https://github.com/Rurimpa

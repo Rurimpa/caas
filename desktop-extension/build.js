@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SPDX-FileCopyrightText: 2026 Rurimpa (https://github.com/Rurimpa/caas)
+// SPDX-License-Identifier: MIT
 /*
  * build.js - packs the CAAS gate as a Claude Desktop extension (caas-gate.mcpb).
  *   node desktop-extension/build.js

@@ -89,4 +89,4 @@ CAAS は、その最後の一手も要りません。
 
 ## ライセンス
 
-コード（`code/`）：MIT（`LICENSE`）。説明文（この README と手順書）：CC BY 4.0。
+コードも説明文（この README と手順書）も、すべて MIT です（`LICENSE`）。使うとき・直して使うときは、作者名（Rurimpa）とこの置き場のアドレスを残してください。作者：Rurimpa（https://github.com/Rurimpa）
