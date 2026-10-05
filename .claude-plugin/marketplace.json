@@ -2,13 +2,13 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "caas",
   "description": "Claude Code marketplace for CAAS",
-  "owner": { "name": "The Cliff-Edge Fukushacho" },
+  "owner": { "name": "Rurimpa" },
   "plugins": [
     {
       "name": "caas",
       "description": "Session-side skill and reply guard for CAAS (Chat-Agent Auto Session).",
       "version": "1.2.0",
-      "author": { "name": "The Cliff-Edge Fukushacho" },
+      "author": { "name": "Rurimpa" },
       "source": "./",
       "category": "productivity",
       "homepage": "https://github.com/Rurimpa/caas",

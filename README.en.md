@@ -4,7 +4,7 @@
 
 **CAAS lets a person talk only to their everyday Claude.ai conversation, while Claude Code sessions that are already running on the same PC do the work, and the results come back to the same conversation without any further human input.**
 
-Technical note (DOI): [10.5281/zenodo.23005933](https://doi.org/10.5281/zenodo.23005933) · Author: がけっぷちのふくしゃちょう / The Cliff-Edge Fukushacho
+Technical note (DOI): [10.5281/zenodo.23005933](https://doi.org/10.5281/zenodo.23005933) · Author: Rurimpa (pen name on the technical note: がけっぷちのふくしゃちょう / The Cliff-Edge Fukushacho)
 
 日本語＝[README.md](README.md) · Detailed setup＝[QUICKSTART.md](QUICKSTART.md)
 

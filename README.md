@@ -4,7 +4,7 @@
 
 **CAAS は、いつもの Claude.ai の会話に話しかけるだけで、同じ PC ですでに動いている Claude Code の席が仕事をし、その結果が人の手を借りずに同じ会話へ戻ってくる仕組みです。**
 
-技術ノート（DOI）：[10.5281/zenodo.23005933](https://doi.org/10.5281/zenodo.23005933)・作者：がけっぷちのふくしゃちょう
+技術ノート（DOI）：[10.5281/zenodo.23005933](https://doi.org/10.5281/zenodo.23005933)・作者：Rurimpa（技術ノートでの筆名＝がけっぷちのふくしゃちょう）
 
 English＝[README.en.md](README.en.md)／くわしい入れ方＝[QUICKSTART.md](QUICKSTART.md)（英語）
 
