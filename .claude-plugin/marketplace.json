@@ -7,7 +7,7 @@
     {
       "name": "caas",
       "description": "Session-side skill and reply guard for CAAS (Chat-Agent Auto Session).",
-      "version": "1.2.0",
+      "version": "1.2.1",
       "author": { "name": "Rurimpa" },
       "source": "./",
       "category": "productivity",
