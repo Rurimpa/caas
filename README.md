@@ -49,6 +49,8 @@ CAAS は、その最後の一手も要りません。
 
 ## しくみ
 
+土台の考え方（Claude Code の席どうしが用件をやり取りするときの作法）は、スキル [cross-session-messaging](https://github.com/Rurimpa/cross-session-messaging) にまとめてあります。CAAS を使わなくても、それだけを2行で入れて使えます。
+
 ```
 [いつもの会話] --(1) 頼み--> [ゲート] --> [動いている Claude Code の席]
       ^                                          |

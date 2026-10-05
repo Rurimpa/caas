@@ -53,6 +53,8 @@ Why "everyday" and "already running" matter: the everyday conversation is where 
 
 ## How it works
 
+The underlying practice (how Claude Code sessions pass requests to each other) is a separate skill, [cross-session-messaging](https://github.com/Rurimpa/cross-session-messaging). You can install it on its own in 2 lines, without CAAS.
+
 ```
 [everyday chat] --(1) MCP message--> [gate] --> [running Claude Code session]
        ^                                                   |
