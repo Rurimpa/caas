@@ -26,8 +26,11 @@ Do these in order and tell the user what you found at each step.
    settings, it is `C:\Users\<Windows user name>\caas\chat_agent_tray`; if they used the setup script, it printed it.
    If the user has not given it, ask for their Windows user name (or the path shown in Claude Desktop →
    Settings → Extensions → CAAS Gate). Check it with `Glob` (path = the tray, pattern = `*`).
-3. **Bell.** Create a one-shot scheduled message in **this** conversation with your scheduled-message tool:
-   - name: `CAAS bell`
+3. **Bell.** First list your scheduled messages. If this conversation already has a bell, do not make a
+   second one: reuse it (and rename it as below if its name is only `CAAS bell`).
+   Otherwise create a one-shot scheduled message in **this** conversation with your scheduled-message tool:
+   - name: `<this conversation's title> CAAS bell` (for example `Trip planning CAAS bell`). Each
+     conversation gets its own bell, and the title in the name lets the user and the PC side tell them apart.
    - date: 2030-01-01 (far future; running it does not use it up)
    - text: `Bell: a session put an answer in <tray folder>. Read the .md files there that start with FROM and end with END, and report them to me.`
    Tell the user the trigger id (`trig_…`). You will put it in every request.
